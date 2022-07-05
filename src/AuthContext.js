@@ -4,30 +4,30 @@ export const AuthContext = createContext();
 
 export const authState = {
   isAuth: Boolean(localStorage.getItem("auth")),
-  user: null,
+  // user: null,
 };
 
 export const authReducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      localStorage.setItem("auth", `Bearer ${action.payload.token}`);
+      localStorage.setItem("auth", `Bearer ${action.payload}`);
       return {
-        ...state,
+        // ...state,
         isAuth: true,
         // user: action.payload.user,
       };
     case "LOGOUT":
       localStorage.removeItem("auth");
       return {
-        ...state,
+        // ...state,
         isAuth: false,
-        user: null,
+        // user: null,
       };
-    case "UPDATE":
-      return {
-        ...state,
-        user: action.payload.user
-      };
+    // case "UPDATE":
+    //   return {
+    //     ...state,
+    //     user: action.payload.user
+    //   };
     default:
       return state;
   }

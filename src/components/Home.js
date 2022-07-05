@@ -1,7 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../AuthContext";
 
 export default function Home() {
-	const isAuth = Boolean(localStorage.getItem("auth"));
+  const { state, dispatch } = useContext(AuthContext);
 	const navigate = useNavigate();
 	return (
 		<>
@@ -15,7 +17,7 @@ export default function Home() {
 								</Link>
 								<ul className="nav">
 									<li className="scroll-to-section">
-										{isAuth ? <a href="#" onClick={() => localStorage.removeItem("auth") ?? navigate('/login')}>Logout</a> : <Link to="/login">Sign In</Link>}
+										{state.isAuth ? <a href="#" onClick={() => dispatch({ type: "LOGOUT"})}>Logout</a> : <Link to="/login">Sign In</Link>}
 									</li>
 								</ul>
 							</nav>
@@ -33,7 +35,7 @@ export default function Home() {
 								<div className="div-dec" />
 								<div className="buttons my-3">
 									<div className="orange-button">
-										{isAuth ? <Link to="/dashboard">Dashboard</Link> : <Link to="/login">Get Started</Link>}
+										{state.isAuth ? <Link to="/dashboard">Dashboard</Link> : <Link to="/login">Get Started</Link>}
 									</div>
 								</div>
 							</div>
@@ -85,38 +87,6 @@ export default function Home() {
 								<h4>Social Media Links</h4>
 								<p>Your all social media presence in one digital business card. Stay connect with your customers. </p>
 							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-			<section className="simple-cta">
-				<div className="container">
-					<div className="row">
-						<div className="col-lg-7">
-							<h4>SetupCard is a <em>Digital Business Card</em> Maker. You can create your own <strong>Digital Vcard</strong> to attract your customers.</h4>
-							<p className="text-white my-3">  </p>
-						</div>
-						<div className="col-lg-5">
-							{
-								isAuth ?
-									<div className="buttons">
-										<div className="green-button">
-											<a href="#" onClick={() => localStorage.removeItem("auth") ?? navigate('/login')}>Logout</a>
-										</div>
-										<div className="orange-button">
-											<Link to="/dashboard">Dashboard</Link>
-										</div>
-									</div>
-									:
-									<div className="buttons">
-										<div className="green-button">
-											<Link to="/login">Sign In</Link>
-										</div>
-										<div className="orange-button">
-											<Link to="/login">Get Started</Link>
-										</div>
-									</div>
-							}
 						</div>
 					</div>
 				</div>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Alert from "./Alert";
 import Loader from "./Loader";
 import Footer from "./Footer";
@@ -8,9 +9,6 @@ import NavBar from "./NavBar";
 export default function Dashboard(props) {
 	const [loading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
-	const [cards, setCards] = useState([]);
-	const [stores, setStores] = useState([]);
-	const [till, setTill] = useState(new Date());
 
 	return (
 		<>
@@ -39,7 +37,7 @@ export default function Dashboard(props) {
 											<div className="subheader">Validity Left</div>
 										</div>
 										<div className="h1">state.user?.validity Days</div>
-										<div className="text-muted">Till: {till.toLocaleDateString()}</div>
+										<div className="text-muted">Till: till.toLocaleDateString()</div>
 									</div>
 								</div>
 							</div>
@@ -62,7 +60,7 @@ export default function Dashboard(props) {
 										<div className="d-flex align-items-center mb-3">
 											<div className="subheader">Business Cards</div>
 										</div>
-										<div className="h1">{cards.length}</div>
+										<div className="h1">cards.length</div>
 										<Link className="btn btn-sm btn-white" to="/cards">Show details</Link>
 									</div>
 								</div>
@@ -73,7 +71,7 @@ export default function Dashboard(props) {
 										<div className="d-flex align-items-center mb-3">
 											<div className="subheader">Whatsapp Stores</div>
 										</div>
-										<div className="h1">{stores.length}</div>
+										<div className="h1">stores.length</div>
 										<Link className="btn btn-sm btn-white" to="/stores">Show details</Link>
 									</div>
 								</div>

@@ -1,6 +1,5 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import config from "../config";
 import { AuthContext } from "../AuthContext";
 
 
@@ -55,7 +54,7 @@ export default function Header(props) {
 							<Link
 								to="/"
 								className="dropdown-item"
-								onClick={e => dispatch({ type: 'LOGOUT' })}
+								onClick={e => dispatch({ type: "LOGOUT" })}
 							>
 								Logout
 							</Link>
