@@ -32,7 +32,7 @@ export default function NavBar(props) {
 								</Link>
 							</li>
 							<li className={props.link === 'cards' ? 'nav-item active' : 'nav-item'}>
-								<Link className="nav-link" to="/cards">
+								<Link className="nav-link" to="/addwa">
 									<span className="nav-link-icon d-md-none d-lg-inline-block">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
@@ -54,7 +54,7 @@ export default function NavBar(props) {
 											<line x1="7" y1="16" x2="17" y2="16"></line>
 										</svg>
 									</span>
-									<span className="nav-link-title">Cards</span>
+									<span className="nav-link-title">Add Whatsapp</span>
 								</Link>
 							</li>
 						</ul>

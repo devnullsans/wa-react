@@ -1,19 +1,45 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Alert from "./Alert";
 import Loader from "./Loader";
 import Footer from "./Footer";
 import Header from "./Header";
-import NavBar from "./NavBar";
+import config from "../config";
+// import NavBar from "./NavBar";
 
 export default function Dashboard(props) {
+	const [numbers, setNumbers] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
+
+	useEffect(() => {
+		(async () => {
+			try {
+				setLoading(true);
+				const res = await fetch(`${config.API_URL}/bot/all`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': localStorage.getItem('auth')
+					}
+				});
+				const body = await res.json();
+				if (res.ok) {
+					console.log(body.data);
+					setNumbers(body.data);
+				}
+			} catch (error) {
+				setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+			} finally {
+				setLoading(false);
+			}
+		})();
+	}, []);
 
 	return (
 		<>
 			<Header />
-			<NavBar link="dashboard" />
+			{/* <NavBar link="dashboard" /> */}
 			<div className="page-wrapper">
 				<div className="container-xl">
 					<div className="page-header d-print-none">
@@ -33,49 +59,32 @@ export default function Dashboard(props) {
 							<div className="col-sm-3 col-lg-3">
 								<div className="card">
 									<div className="card-body">
-										<div className="d-flex align-items-center mb-3">
-											<div className="subheader">Validity Left</div>
-										</div>
-										<div className="h1">state.user?.validity Days</div>
-										<div className="text-muted">Till: till.toLocaleDateString()</div>
+										<div className="h1">Whatsapps</div>
+										{numbers.map(({ id, number, event }) => (
+											<div className="text-muted" key={id}>{number}:{event}</div>
+										))}
 									</div>
 								</div>
 							</div>
 
-							<div className="col-sm-3 col-lg-3">
-								<div className="card">
-									<div className="card-body">
-										<div className="d-flex align-items-center mb-3">
-											<div className="subheader">Referrer Code</div>
+							{Boolean(numbers.length) && (
+								<div className="col-sm-3 col-lg-3">
+									<div className="card">
+										<div className="card-body">
+											<Link className="btn btn-md btn-primary" to="/sendm">Send Message</Link>
 										</div>
-										<div className="h1">state.user?.ref_code</div>
-										<div className="text-muted">Refer and get 90 days more</div>
 									</div>
 								</div>
-							</div>
+							)}
 
 							<div className="col-sm-3 col-lg-3">
 								<div className="card">
 									<div className="card-body">
-										<div className="d-flex align-items-center mb-3">
-											<div className="subheader">Business Cards</div>
-										</div>
-										<div className="h1">cards.length</div>
-										<Link className="btn btn-sm btn-white" to="/cards">Show details</Link>
+										<Link className="btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
 									</div>
 								</div>
 							</div>
-							<div className="col-sm-3 col-lg-3">
-								<div className="card">
-									<div className="card-body">
-										<div className="d-flex align-items-center mb-3">
-											<div className="subheader">Whatsapp Stores</div>
-										</div>
-										<div className="h1">stores.length</div>
-										<Link className="btn btn-sm btn-white" to="/stores">Show details</Link>
-									</div>
-								</div>
-							</div>
+
 						</div>
 					</div>
 				</div>

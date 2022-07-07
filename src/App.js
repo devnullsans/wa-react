@@ -1,29 +1,39 @@
 import { AuthContext, authReducer, authState } from "./AuthContext";
-import { Suspense, lazy, useReducer } from "react";
+import { useReducer } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Home from "./components/Home";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import AddWA from "./components/AddWA";
+import NotFound from "./components/NotFound";
+import SendM from "./components/SendM";
 
-const Home = lazy(() => import("./components/Home"));
-const Login = lazy(() => import("./components/Login"));
-const Dashboard = lazy(() => import("./components/Dashboard"));
-const NotFound = lazy(() => import("./components/NotFound"));
 
 export default function App() {
   const [state, dispatch] = useReducer(authReducer, authState);
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
       <Router>
-        <Suspense fallback="Loading...">
-          <Routes>
-            <Route exact path="/" element={<Home />} />
-            <Route exact path="/login" element={<Login />} />
-            <Route
-              exact
-              path="/dashboard"
-              element={state.isAuth ? <Dashboard /> : <Navigate to="/login" />}
-            />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route
+            exact
+            path="/dashboard"
+            element={state.isAuth ? <Dashboard /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/addwa"
+            element={state.isAuth ? <AddWA /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/sendm"
+            element={state.isAuth ? <SendM /> : <Navigate to="/login" />}
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </Router>
     </AuthContext.Provider>
   );
