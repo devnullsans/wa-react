@@ -24,10 +24,8 @@ export default function Dashboard(props) {
 					}
 				});
 				const body = await res.json();
-				if (res.ok) {
-					console.log(body.data);
+				if (res.ok)
 					setNumbers(body.data);
-				}
 			} catch (error) {
 				setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
 			} finally {
