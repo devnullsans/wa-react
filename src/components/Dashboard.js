@@ -8,7 +8,7 @@ import config from "../config";
 // import NavBar from "./NavBar";
 
 export default function Dashboard(props) {
-	const [numbers, setNumbers] = useState([]);
+	const [senders, setSenders] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
 
@@ -25,7 +25,7 @@ export default function Dashboard(props) {
 				});
 				const body = await res.json();
 				if (res.ok)
-					setNumbers(body.data);
+					setSenders(body.data);
 			} catch (error) {
 				setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
 			} finally {
@@ -54,31 +54,56 @@ export default function Dashboard(props) {
 					<div className="container-xl">
 						<div className="row row-deck row-cards">
 
-							<div className="col-sm-3 col-lg-3">
+							<div className="col-sm-4 col-lg-4">
 								<div className="card">
-									<div className="card-body">
-										<div className="h1">Whatsapps</div>
-										{numbers.map(({ id, number, event }) => (
-											<div className="text-muted" key={id}>{number}:{event}</div>
+									<div className="card-header">
+										<div className="h1">Whatsapp</div>
+									</div>
+									<div className="card-body d-flex flex-column justify-content-around align-items-center">
+										<Link className="btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
+										{Boolean(senders.length) && (
+											<Link className="btn btn-md btn-primary" to="/sendm">Send Message</Link>
+										)}
+									</div>
+								</div>
+							</div>
+
+							<div className="col-sm-4 col-lg-4">
+								<div className="card">
+									<div className="card-header">
+										<div className="h1">Status</div>
+									</div>
+									<div className="list-group list-group-flush overflow-auto" style={{ maxHeight: '15rem' }}>
+										{senders.map(({ id, number, event }) => (
+											<div key={id} className="list-group-header">{number}:{event}</div>
 										))}
 									</div>
 								</div>
 							</div>
 
-							{Boolean(numbers.length) && (
-								<div className="col-sm-3 col-lg-3">
-									<div className="card">
-										<div className="card-body">
-											<Link className="btn btn-md btn-primary" to="/sendm">Send Message</Link>
-										</div>
-									</div>
-								</div>
-							)}
-
-							<div className="col-sm-3 col-lg-3">
+							<div className="col-sm-4 col-lg-4">
 								<div className="card">
-									<div className="card-body">
-										<Link className="btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
+									<div className="card-header">
+										<div className="h1">Campaigns</div>
+									</div>
+									<div className="list-group list-group-flush overflow-auto" style={{ maxHeight: '15rem' }}>
+										{senders.filter(({ messages }) => Boolean(messages.length)).map(({ id, number, messages }) => (
+											<>
+												<div key={id} className="list-group-header sticky-top">{number}</div>
+												{messages.map(message => (
+													<div key={message.id} className="list-group-item">
+														<div className="row">
+															<div className="col text-truncate">
+																<a href="#" className="text-body d-block">total: {message.total} sent: {message.sent} failed: {message.failed}</a>
+																<div className="text-muted text-truncate mt-n1">mime: {message.mime}</div>
+																<div className="text-muted text-truncate mt-n1">size: {message.size}</div>
+																<div className="text-muted text-truncate mt-n1">length: {message.length}</div>
+															</div>
+														</div>
+													</div>
+												))}
+											</>
+										))}
 									</div>
 								</div>
 							</div>
