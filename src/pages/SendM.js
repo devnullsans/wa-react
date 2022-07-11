@@ -1,39 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import Alert from "./Alert";
-import Loader from "./Loader";
-import Footer from "./Footer";
-import Header from "./Header";
-// import NavBar from "./NavBar";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import Alert from "../components/Alert";
+import Loader from "../components/Loader";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+// import NavBar from "../components/NavBar";
 import config from "../config";
 
-export default function SendM(props) {
+export default function SendM() {
   const navigate = useNavigate();
-  const [numbers, setNumbers] = useState([]);
+  const { state } = useLocation();
   const [loading, setLoading] = useState(false);
   const [alerts, setAlerts] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`${config.API_URL}/bot/all`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('auth')
-          }
-        });
-        const body = await res.json();
-        if (res.ok)
-          setNumbers(body.data);
-      } catch (error) {
-        setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
 
   const onSend = async (e) => {
     e.preventDefault();
@@ -45,6 +23,7 @@ export default function SendM(props) {
     //   setAlerts([...alerts, { type: 'warning', title: 'No message to send', text: 'Either choose image or enter message' }]);
     // }
     try {
+      setLoading(true);
       const res = await fetch(`${config.API_URL}/bot/send`, {
         method: 'POST',
         headers: { 'Authorization': localStorage.getItem('auth') },
@@ -52,18 +31,16 @@ export default function SendM(props) {
       });
       if (res.ok) {
         setAlerts([...alerts, { type: 'success', title: 'Form Data posted', text: 'Yeeee' }]);
+        navigate('/dashboard');
       } else {
         setAlerts([...alerts, { type: 'warning', title: 'Nooooo', text: 'Why ???' }]);
       }
     } catch (error) {
       setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+    } finally {
+      setLoading(false);
     }
   };
-
-  // const handleChange = e => {
-  //   console.log('handleChange', e.target.name, e.target.value, e.target.type);
-  //   setData(d => ({ ...d, [e.target.name]: e.target.type == 'file' ? e.target.files.item(0) : e.target.value }));
-  // };
 
   return (
     <>
@@ -91,7 +68,7 @@ export default function SendM(props) {
                     <label className="form-label required">Sender</label>
                     <select className="form-select tomselected ts-hidden-accessible" name="sender" required>
                       <option value="" disabled>Select a Number</option>
-                      {numbers.map(({ id, number }) => (
+                      {state?.map(({ id, number }) => (
                         <option key={id} value={id}>{number}</option>
                       ))}
                     </select>

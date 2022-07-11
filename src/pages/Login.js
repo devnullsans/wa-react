@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../AuthContext";
-import Loader from "./Loader";
-import Alert from "./Alert";
+import Loader from "../components/Loader";
+import Alert from "../components/Alert";
 import config from "../config";
 
 export default function Login() {

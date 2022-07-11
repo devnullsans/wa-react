@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
-import Alert from "./Alert";
-import Loader from "./Loader";
-import Footer from "./Footer";
-import Header from "./Header";
-// import NavBar from "./NavBar";
+import Alert from "../components/Alert";
+import Loader from "../components/Loader";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+// import NavBar from "../components/NavBar";
 import config from "../config";
 
 export default function AddWA(props) {

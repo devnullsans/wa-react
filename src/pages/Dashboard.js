@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Alert from "./Alert";
-import Loader from "./Loader";
-import Footer from "./Footer";
-import Header from "./Header";
+import Alert from "../components/Alert";
+import Loader from "../components/Loader";
+import Footer from "../components/Footer";
+import Header from "../components/Header";
 import config from "../config";
 // import NavBar from "./NavBar";
 
 export default function Dashboard(props) {
-	const [senders, setSenders] = useState([]);
+	const [numbers, setNumbers] = useState([]);
+	const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
 
@@ -16,7 +17,7 @@ export default function Dashboard(props) {
 		(async () => {
 			try {
 				setLoading(true);
-				const res = await fetch(`${config.API_URL}/bot/all`, {
+				const res = await fetch(`${config.API_URL}/bot/dash`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -24,10 +25,13 @@ export default function Dashboard(props) {
 					}
 				});
 				const body = await res.json();
-				if (res.ok)
-					setSenders(body.data);
+				if (res.ok) {
+					console.log(body.data);
+					setNumbers(body.data.numbers);
+					setMessages(body.data.messages);
+				}
 			} catch (error) {
-				setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+				setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
 			} finally {
 				setLoading(false);
 			}
@@ -54,33 +58,36 @@ export default function Dashboard(props) {
 					<div className="container-xl">
 						<div className="row row-deck row-cards">
 
-							<div className="col-sm-4 col-lg-4">
+							<div className="col-sm-6 col-lg-6">
 								<div className="card">
 									<div className="card-header">
 										<div className="h1">Whatsapp</div>
 									</div>
 									<div className="card-body d-flex flex-column justify-content-around align-items-center">
-										<Link className="btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
-										{Boolean(senders.length) && (
-											<Link className="btn btn-md btn-primary" to="/sendm">Send Message</Link>
+										<Link className="my-2 btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
+										{Boolean(numbers.length) && (
+											<Link className="my-2 btn btn-md btn-primary" to="/sendm" state={numbers}>Send Message</Link>
+										)}
+										{Boolean(messages.length) && (
+											<Link className="my-2 btn btn-md btn-secondary" to="/dlvrpt" state={messages.map(m => ({ ...m, number: numbers.find(n => m.sender == n.id)?.number }))}>Campaigns</Link>
 										)}
 									</div>
 								</div>
 							</div>
 
-							<div className="col-sm-4 col-lg-4">
+							<div className="col-sm-6 col-lg-6">
 								<div className="card">
 									<div className="card-header">
 										<div className="h1">Status</div>
 									</div>
 									<div className="list-group list-group-flush overflow-auto" style={{ maxHeight: '15rem' }}>
-										{senders.map(({ id, number, event }) => (
+										{numbers.map(({ id, number, event }) => (
 											<div key={id} className="list-group-header">{number}:{event}</div>
 										))}
 									</div>
 								</div>
 							</div>
-
+							{/* 
 							<div className="col-sm-4 col-lg-4">
 								<div className="card">
 									<div className="card-header">
@@ -107,7 +114,7 @@ export default function Dashboard(props) {
 									</div>
 								</div>
 							</div>
-
+ */}
 						</div>
 					</div>
 				</div>

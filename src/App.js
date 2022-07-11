@@ -1,12 +1,13 @@
 import { AuthContext, authReducer, authState } from "./AuthContext";
 import { useReducer } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import AddWA from "./components/AddWA";
-import NotFound from "./components/NotFound";
-import SendM from "./components/SendM";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import AddWA from "./pages/AddWA";
+import NotFound from "./pages/NotFound";
+import SendM from "./pages/SendM";
+import Campaigns from "./pages/Campaigns";
 
 
 export default function App() {
@@ -31,6 +32,11 @@ export default function App() {
             exact
             path="/sendm"
             element={state.isAuth ? <SendM /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/dlvrpt"
+            element={state.isAuth ? <Campaigns /> : <Navigate to="/login" />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
