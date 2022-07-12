@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import Alert from "../components/Alert";
 import Loader from "../components/Loader";
@@ -69,9 +69,9 @@ export default function Campaigns() {
             </div>
           </div>
         </div>
+        <Alert list={alerts} setList={setAlerts} />
         <Footer />
       </div >
-      <Alert list={alerts} setList={setAlerts} />
     </>
   );
 }

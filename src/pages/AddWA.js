@@ -57,12 +57,14 @@ export default function AddWA(props) {
       const body = await res.json();
       if (res.ok) {
         const event = body.data.event;
-        if (event === 'authenticated' || event === 'ready') navigate('/dashboard');
-        else {
+        if (event === 'authenticated' || event === 'ready') {
+          // navigate('/dashboard');
+          setAlerts([...alerts, { type: 'success', title: 'Whatsapp Connected!', text: '' }]);
+        } else {
           setQr(body.data.qr);
           setTimeout(fetchQR, 4e3);
         }
-      } 
+      }
     } catch (error) {
       setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
     }
@@ -85,13 +87,15 @@ export default function AddWA(props) {
         </div>
         <div className="page-body">
           {loading && <Loader />}
-          <div className="container-xl">
-            <QRCode value={qr} />
-          </div>
+          {qr.length > 10 && (
+            <div className="container-xl">
+              <QRCode value={qr} />
+            </div>
+          )}
         </div>
+        <Alert list={alerts} setList={setAlerts} />
         <Footer />
       </div>
-      <Alert list={alerts} setList={setAlerts} />
     </>
   );
 }

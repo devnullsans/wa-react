@@ -114,13 +114,13 @@ export default function Dashboard(props) {
 									</div>
 								</div>
 							</div>
- */}
+							*/}
 						</div>
 					</div>
 				</div>
+				<Alert list={alerts} setList={setAlerts} />
 				<Footer />
 			</div>
-			<Alert list={alerts} setList={setAlerts} />
 		</>
 	);
 }
