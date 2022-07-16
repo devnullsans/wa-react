@@ -24,14 +24,15 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
+      const body = await res.json();
       if (res.ok) {
-        setAlerts([...alerts, { type: 'info', title: 'Login Success!', text: 'Now time for OTP' }]);
+        setAlerts([...alerts, { type: 'info', title: 'Email Accepted!', text: body.data }]);
         setReset(true);
       }
       else
-        setAlerts([...alerts, { type: 'warning', title: 'Login Issue!', text: 'This is your fault' }]);
+        setAlerts([...alerts, { type: 'warning', title: 'Login Issue!', text: body.error }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -53,17 +54,17 @@ export default function Login() {
           type: "LOGIN",
           payload: body.data,
         });
-        setAlerts([...alerts, { type: 'success', title: 'OTP Verified!', text: 'Now to Dashboard' }]);
+        setAlerts([...alerts, { type: 'success', title: 'OTP Verified!', text: 'Next add your whatsapp' }]);
         navigate('/dashboard');
       }
       else if (res.status !== 401) {
         dispatch({ type: "LOGOUT" });
-        setAlerts([...alerts, { type: 'danger', title: 'Auth Issue!', text: 'Need to login' }]);
+        setAlerts([...alerts, { type: 'danger', title: 'OTP Incorrect!', text: body.error }]);
         setReset(false);
       } else
-        setAlerts([...alerts, { type: 'warning', title: 'OTP Issue!', text: 'This is your fault' }]);
+        setAlerts([...alerts, { type: 'warning', title: 'OTP Issue!', text: body.error }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -81,7 +82,7 @@ export default function Login() {
       });
       setAlerts([...alerts, { type: 'info', title: 'OTP Resent!', text: 'Check your email' }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }

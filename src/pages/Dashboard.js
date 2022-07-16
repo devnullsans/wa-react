@@ -9,7 +9,7 @@ import config from "../config";
 
 export default function Dashboard(props) {
 	const [numbers, setNumbers] = useState([]);
-	const [messages, setMessages] = useState([]);
+	// const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [alerts, setAlerts] = useState([]);
 
@@ -27,8 +27,10 @@ export default function Dashboard(props) {
 				const body = await res.json();
 				if (res.ok) {
 					console.log(body.data);
-					setNumbers(body.data.numbers);
-					setMessages(body.data.messages);
+					setNumbers(body.data);
+					// setMessages(body.data.messages);
+				} else {
+					setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: 'Need to Refresh Page.' }]);
 				}
 			} catch (error) {
 				setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
@@ -64,13 +66,13 @@ export default function Dashboard(props) {
 										<div className="h1">Whatsapp</div>
 									</div>
 									<div className="card-body d-flex flex-column justify-content-around align-items-center">
-										<Link className="my-2 btn btn-md btn-success" to="/addwa">Add Whatsapp</Link>
+										<Link className="my-2 btn btn-md btn-success" to="/addwa" >Add Whatsapp</Link>
 										{Boolean(numbers.length) && (
 											<Link className="my-2 btn btn-md btn-primary" to="/sendm" state={numbers}>Send Message</Link>
 										)}
-										{Boolean(messages.length) && (
+										{/* {Boolean(messages.length) && (
 											<Link className="my-2 btn btn-md btn-secondary" to="/dlvrpt" state={messages.map(m => ({ ...m, number: numbers.find(n => m.sender == n.id)?.number }))}>Campaigns</Link>
-										)}
+										)} */}
 									</div>
 								</div>
 							</div>
@@ -82,7 +84,12 @@ export default function Dashboard(props) {
 									</div>
 									<div className="list-group list-group-flush overflow-auto" style={{ maxHeight: '15rem' }}>
 										{numbers.map(({ id, number, event }) => (
-											<div key={id} className="list-group-header">{number}:{event}</div>
+											<div key={id} className="list-group-header">
+												{number}:{event}
+												{event === 'unauth' && (
+													<Link className="btn btn-sm btn-primary" to="/addwa" state={String(id)}>Re Connect</Link>
+												)}
+											</div>
 										))}
 									</div>
 								</div>

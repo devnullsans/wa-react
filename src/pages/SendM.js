@@ -10,7 +10,7 @@ import config from "../config";
 export default function SendM() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [delay, setDelay] = useState(30);
+  const [delay, setDelay] = useState(20);
   const [batch, setBatch] = useState(1);
   const [loading, setLoading] = useState(false);
   const [alerts, setAlerts] = useState([]);
@@ -21,6 +21,8 @@ export default function SendM() {
     // if (!data.get('media')?.size && !data.get('text')) {
     //   return setAlerts([...alerts, { type: 'warning', title: 'No message to send', text: 'Either choose image or enter message' }]);
     // }
+    const sender = data.get('sender');
+    data.delete('sender');
     const receivers = data.get('receivers[]');
     data.delete('receivers[]');
     receivers.split(',')
@@ -30,18 +32,18 @@ export default function SendM() {
       .forEach(r => data.append('receivers[]', r));
     try {
       setLoading(true);
-      const res = await fetch(`${config.API_URL}/bot/send`, {
+      const res = await fetch(`${config.API_URL}/bot/send/${sender}`, {
         method: 'POST',
         headers: { 'Authorization': localStorage.getItem('auth') },
         body: data
       });
-      if (res.ok) {
-        setAlerts([...alerts, { type: 'success', title: 'Form Data posted', text: 'Yeeee' }]);
-      } else {
-        setAlerts([...alerts, { type: 'warning', title: 'Nooooo', text: 'Why ???' }]);
-      }
+      const body = await res.json();
+      if (res.ok)
+        setAlerts([...alerts, { type: 'success', title: 'Message Accepted!', text: body.data }]);
+      else
+        setAlerts([...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }

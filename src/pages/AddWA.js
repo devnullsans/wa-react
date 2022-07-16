@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
 import Alert from "../components/Alert";
@@ -10,8 +10,9 @@ import config from "../config";
 
 export default function AddWA(props) {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [qr, setQr] = useState("");
-  const [bid, setBid] = useState(0);
+  const [bid, setBid] = useState(state ?? "");
   const [loading, setLoading] = useState(false);
   const [alerts, setAlerts] = useState([]);
 
@@ -19,7 +20,7 @@ export default function AddWA(props) {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`${config.API_URL}/bot/init`, {
+        const res = await fetch(`${config.API_URL}/bot/init/${bid}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -28,13 +29,13 @@ export default function AddWA(props) {
         });
         const body = await res.json();
         if (res.ok) {
-          console.log(body.data);
           setBid(body.data);
+          console.log(body.data);
         }
         else
-          setAlerts([...alerts, { type: 'warning', title: 'Why?', text: 'This is your fault' }]);
+          setAlerts([...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
       } catch (error) {
-        setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+        setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
       } finally {
         setLoading(false);
       }
@@ -56,17 +57,23 @@ export default function AddWA(props) {
       });
       const body = await res.json();
       if (res.ok) {
-        const event = body.data.event;
-        if (event === 'authenticated' || event === 'ready') {
-          // navigate('/dashboard');
-          setAlerts([...alerts, { type: 'success', title: 'Whatsapp Connected!', text: '' }]);
+        const { qr, state } = body.data;
+        if (state === 'unauth') {
+          setQr(qr);
+          // timeout is leaky !!!
+          setTimeout(() => fetchQR(), 4e3);
+          // check Network > go to /addwa > dont verify qr > back to dash > qr is still requested
         } else {
-          setQr(body.data.qr);
-          setTimeout(fetchQR, 4e3);
+          setQr("");
+          setAlerts([...alerts, { type: 'success', title: 'Whatsapp Connected!', text: '' }]);
         }
       }
+      else {
+        setQr("");
+        setAlerts([...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
+      }
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: error.message }]);
+      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     }
   };
 
@@ -87,11 +94,9 @@ export default function AddWA(props) {
         </div>
         <div className="page-body">
           {loading && <Loader />}
-          {qr.length > 10 && (
-            <div className="container-xl">
-              <QRCode value={qr} />
-            </div>
-          )}
+          <div className="container-xl">
+            {Boolean(qr) ? (<QRCode value={qr} />) : (<p>Please Wait ...</p>)}
+          </div>
         </div>
         <Alert list={alerts} setList={setAlerts} />
         <Footer />
