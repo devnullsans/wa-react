@@ -12,6 +12,7 @@ export default function SendM() {
   const { state } = useLocation();
   const [delay, setDelay] = useState(20);
   const [batch, setBatch] = useState(1);
+  const [cap, setCap] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alerts, setAlerts] = useState([]);
 
@@ -70,7 +71,10 @@ export default function SendM() {
             <div className="row row-deck row-cards">
               <div className="col-sm-12 col-lg-12">
                 <form className="card p-4" onSubmit={onSend}>
-
+                  <div className="mb-3">
+                    <label className="form-label required">Name</label>
+                    <input type="text" className="form-control" name="name" defaultValue={Date.now().toString(36)} required />
+                  </div>
                   <div className="mb-3">
                     <label className="form-label required">Sender</label>
                     <select className="form-select tomselected ts-hidden-accessible" name="sender" required>
@@ -102,20 +106,20 @@ export default function SendM() {
                     <input type="range" className="form-range mb-2" min={1} max={5} step={1} value={batch} onChange={e => setBatch(e.target.value)} name="batch" required />
                   </div>
                   <div className="mb-3">
-                    <div className="form-label">Image</div>
-                    <input type="file" accept="image/*" className="form-control" name="media" />
+                    <label className={`form-label ${cap ? 'required' : ''}`}>Image</label>
+                    <input type="file" accept="image/*" className="form-control" name="media" required={cap} />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">
+                    <label className={`form-label ${cap ? 'required' : ''}`}>
                       Message
                       <span className="form-label-description">
                         <label className="form-check">
-                          <input className="form-check-input" type="checkbox" name="caption" />
+                          <input className="form-check-input" type="checkbox" name="caption" checked={cap} onChange={e => setCap(e.target.checked)} />
                           <span className="form-check-label">As Caption</span>
                         </label>
                       </span>
                     </label>
-                    <textarea className="form-control" rows={2} name="text" />
+                    <textarea className="form-control" rows={2} name="text" required={cap} />
                   </div>
                   <div className="card-footer">
                     <div className="d-flex justify-content-between">

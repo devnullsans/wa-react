@@ -70,9 +70,9 @@ export default function Dashboard(props) {
 										{Boolean(numbers.length) && (
 											<Link className="my-2 btn btn-md btn-primary" to="/sendm" state={numbers}>Send Message</Link>
 										)}
-										{/* {Boolean(messages.length) && (
-											<Link className="my-2 btn btn-md btn-secondary" to="/dlvrpt" state={messages.map(m => ({ ...m, number: numbers.find(n => m.sender == n.id)?.number }))}>Campaigns</Link>
-										)} */}
+										{/* {Boolean(messages.length) && ( */}
+										<Link className="my-2 btn btn-md btn-secondary" to="/cmprpt">Report</Link>
+										{/* )} */}
 									</div>
 								</div>
 							</div>

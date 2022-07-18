@@ -35,7 +35,7 @@ export default function App() {
           />
           <Route
             exact
-            path="/dlvrpt"
+            path="/cmprpt"
             element={state.isAuth ? <Campaigns /> : <Navigate to="/login" />}
           />
           <Route path="*" element={<NotFound />} />
