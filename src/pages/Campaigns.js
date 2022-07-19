@@ -104,7 +104,7 @@ export default function Campaigns() {
                       <div className="list-group-item">
                         <div className="row align-items-center">
                           <div className="col-auto">
-                            <span className="avatar avatar-md" style={{ backgroundImage: `url(${message?.path})` }}>{Boolean(message?.path) || 'N/A'}</span>
+                            <span className="avatar avatar-md" style={{ backgroundImage: `url(${message?.file})` }}>{Boolean(message?.file) || 'N/A'}</span>
                           </div>
                           <div className="col text-truncate">
                             <div className="text-reset d-block">{message?.number}</div>
@@ -122,21 +122,28 @@ export default function Campaigns() {
                     </div>
                   </div>
                   <div className="card-body">
-                    <div className="list-group list-group-flush">
-                      {receivers.map(({ id, number, status, sts }) => (
-                        <div className="list-group-item" key={id}>
-                          <div className="row align-items-center">
-                            <div className="col-auto">{number}</div>
-                            <div className="col text-truncate">{new Date(sts).toLocaleString()}</div>
-                            <div className="col-auto">
-                              {status === 0 && <span className="badge bg-gray">Pending</span>}
-                              {status === 1 && <span className="badge bg-green">Sent</span>}
-                              {status === -1 && <span className="badge bg-red">Failed</span>}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                    <table className="table card-table table-vcenter text-nowrap datatable">
+                      <thead>
+                        <tr>
+                          <th>Number</th>
+                          <th>Last Update</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {receivers.map(({ id, number, status, sts }) => (
+                          <tr key={id}>
+                            <td><span className="flag flag-country-in" />{number}</td>
+                            <td>{new Date(sts).toLocaleString()}</td>
+                            <td>
+                              {status === 0 && <span className="badge bg-secondary">Pending</span>}
+                              {status === 1 && <span className="badge bg-success">Sent</span>}
+                              {status === -1 && <span className="badge bg-danger">Failed</span>}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
