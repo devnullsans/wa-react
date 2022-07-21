@@ -1,0 +1,27 @@
+.spinneroverlay {
+  background: #222;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 5000;
+  top: 0;
+  left: 0;
+  float: left;
+  text-align: center;
+  padding-top: 25%;
+  opacity: .80;
+}
+
+.notification-container {
+	font-size: 14px;
+	box-sizing: border-box;
+	position: fixed;
+	z-index: 999999
+}
+
+.bottom-right {
+	bottom: 12px;
+	right: 12px;
+	/*transition: transform .6s ease-in-out;
+	animation: toast-in-right .7s;*/
+}

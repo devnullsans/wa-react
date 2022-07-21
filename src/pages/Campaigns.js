@@ -1,19 +1,15 @@
-import { useState, useEffect } from "react";
-import Alert from "../components/Alert";
+import { useState, useEffect, useContext } from "react";
 import Loader from "../components/Loader";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-// import NavBar from "../components/NavBar";
 import config from "../config";
+import { AuthContext } from "../AuthContext";
 
 export default function Campaigns() {
-  // const { state } = useLocation();
+  const { setAlerts } = useContext(AuthContext);
   const [mid, setMid] = useState("");
   const [messages, setMessages] = useState([]);
   const [receivers, setReceivers] = useState([]);
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [alerts, setAlerts] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -29,12 +25,11 @@ export default function Campaigns() {
         if (res.ok) {
           console.log(body.data);
           setMessages(body.data);
-          // setMessages(body.data.messages);
         } else {
-          setAlerts([...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
+          setAlerts(alerts => [...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
         }
       } catch (error) {
-        setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+        setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
       } finally {
         setLoading(false);
       }
@@ -58,10 +53,10 @@ export default function Campaigns() {
         setReceivers(body.data.receivers);
       }
       else {
-        setAlerts([...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
+        setAlerts(alerts => [...alerts, { type: 'warning', title: 'Server Issue!', text: body.error }]);
       }
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+      setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -69,8 +64,6 @@ export default function Campaigns() {
 
   return (
     <>
-      <Header />
-      {/* <NavBar link="addwa" /> */}
       <div className="page-wrapper">
         <div className="container-xl">
           <div className="page-header d-print-none">
@@ -150,8 +143,6 @@ export default function Campaigns() {
             )}
           </div>
         </div>
-        <Alert list={alerts} setList={setAlerts} />
-        <Footer />
       </div >
     </>
   );

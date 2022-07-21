@@ -2,14 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { AuthContext } from "../AuthContext";
 import Loader from "../components/Loader";
-import Alert from "../components/Alert";
 import config from "../config";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { dispatch } = useContext(AuthContext);
+  const { dispatch, setAlerts } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
-  const [alerts, setAlerts] = useState([]);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [reset, setReset] = useState(false);
@@ -26,13 +24,13 @@ export default function Login() {
       });
       const body = await res.json();
       if (res.ok) {
-        setAlerts([...alerts, { type: 'info', title: 'Email Accepted!', text: body.data }]);
+        setAlerts(alerts => [...alerts, { type: 'info', title: 'Email Accepted!', text: body.data }]);
         setReset(true);
       }
       else
-        setAlerts([...alerts, { type: 'warning', title: 'Login Issue!', text: body.error }]);
+        setAlerts(alerts => [...alerts, { type: 'warning', title: 'Login Issue!', text: body.error }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+      setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -54,17 +52,17 @@ export default function Login() {
           type: "LOGIN",
           payload: body.data,
         });
-        setAlerts([...alerts, { type: 'success', title: 'OTP Verified!', text: 'Next add your whatsapp' }]);
+        setAlerts(alerts => [...alerts, { type: 'success', title: 'OTP Verified!', text: 'Next add your whatsapp' }]);
         navigate('/dashboard');
       }
       else if (res.status !== 401) {
         dispatch({ type: "LOGOUT" });
-        setAlerts([...alerts, { type: 'danger', title: 'OTP Incorrect!', text: body.error }]);
+        setAlerts(alerts => [...alerts, { type: 'danger', title: 'OTP Incorrect!', text: body.error }]);
         setReset(false);
       } else
-        setAlerts([...alerts, { type: 'warning', title: 'OTP Issue!', text: body.error }]);
+        setAlerts(alerts => [...alerts, { type: 'warning', title: 'OTP Issue!', text: body.error }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+      setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -80,9 +78,9 @@ export default function Login() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
       });
-      setAlerts([...alerts, { type: 'info', title: 'OTP Resent!', text: 'Check your email' }]);
+      setAlerts(alerts => [...alerts, { type: 'info', title: 'OTP Resent!', text: 'Check your email' }]);
     } catch (error) {
-      setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+      setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
     } finally {
       setLoading(false);
     }
@@ -91,9 +89,6 @@ export default function Login() {
   return (
     <div className="page page-center">
       <div className="container-tight py-4">
-        <div className="text-center mb-4">
-          <Link to="/" className="navbar-brand navbar-brand-autodark"><img src={`${config.PUBLIC_URL}/logo.png`} alt="logo" height="36" /></Link>
-        </div>
         {loading && <Loader />}
         {reset ? (
           <form onSubmit={onOtpSubmit} className="card card-md" autoComplete="off">
@@ -127,7 +122,6 @@ export default function Login() {
         )
         }
       </div >
-      <Alert list={alerts} setList={setAlerts} />
     </div >
   );
 }

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 
-
 export default function Alert({ list, setList }) {
 	useEffect(() => {
 		if (list.length === 0) return undefined;

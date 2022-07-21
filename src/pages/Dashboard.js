@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import Alert from "../components/Alert";
 import Loader from "../components/Loader";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import config from "../config";
-// import NavBar from "./NavBar";
+import { AuthContext } from "../AuthContext";
 
 export default function Dashboard(props) {
+  const { setAlerts } = useContext(AuthContext);
 	const [numbers, setNumbers] = useState([]);
-	// const [messages, setMessages] = useState([]);
 	const [loading, setLoading] = useState(false);
-	const [alerts, setAlerts] = useState([]);
 
 	useEffect(() => {
 		(async () => {
@@ -30,10 +27,10 @@ export default function Dashboard(props) {
 					setNumbers(body.data);
 					// setMessages(body.data.messages);
 				} else {
-					setAlerts([...alerts, { type: 'danger', title: 'Server Issue!', text: 'Need to Refresh Page.' }]);
+					setAlerts(alerts => [...alerts, { type: 'danger', title: 'Server Issue!', text: 'Need to Refresh Page.' }]);
 				}
 			} catch (error) {
-				setAlerts([...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
+				setAlerts(alerts => [...alerts, { type: 'danger', title: 'Network Issue!', text: error.message }]);
 			} finally {
 				setLoading(false);
 			}
@@ -42,8 +39,6 @@ export default function Dashboard(props) {
 
 	return (
 		<>
-			<Header />
-			{/* <NavBar link="dashboard" /> */}
 			<div className="page-wrapper">
 				<div className="container-xl">
 					<div className="page-header d-print-none">
@@ -125,8 +120,6 @@ export default function Dashboard(props) {
 						</div>
 					</div>
 				</div>
-				<Alert list={alerts} setList={setAlerts} />
-				<Footer />
 			</div>
 		</>
 	);

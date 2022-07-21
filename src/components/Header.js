@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 
-
 export default function Header(props) {
 	const { state, dispatch } = useContext(AuthContext);
 	return (
@@ -28,8 +27,8 @@ export default function Header(props) {
 					</Link>
 				</h1>
 				<div className="navbar-nav flex-row order-md-last">
-					<Link to="/" className="" onClick={e => dispatch({ type: "LOGOUT" })}>
-						Logout
+					<Link to="/login" className="" onClick={e => state.isAuth && dispatch({ type: "LOGOUT" })}>
+						{state.isAuth ? 'Logout' : 'Login'}
 					</Link>
 				</div>
 			</div>
